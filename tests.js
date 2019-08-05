@@ -30,4 +30,5 @@ app.listen(app.get('port'), function(){
 console.log( 'Express started on http://localhost:' +
 app.get('port') + '; press Ctrl-C to terminate.' );
 });
-console.log('test commit')
+console.log('test commit1')
+console.log(app.get('env'))
