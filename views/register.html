@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>apitest</title>
+	<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+</head>
+<body>
+	<form name='form'>
+		<input type="text" name="username" placeholder="账号">
+		<input type="text" name="password" placeholder="密码">
+		<input type="text" name="email" placeholder="邮箱">
+		<input type="text" name="emailcode" placeholder="邮箱验证码">
+	</form>
+	<button type="button" name="testAPI">点击测试api接口注册</button>
+	<button type="button" name="testAPI1">点击测试api接口发送邮箱验证码</button>
+	<script type="text/javascript">
+		$(function(){
+			$('button[name=testAPI1]').click(function(){
+				var email = $('input[name=email]').val()
+				var obj = {email:email}
+				var reg = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/;
+				if(reg.test(email)){
+					$.ajax({
+						url:'http://192.168.1.252:3000/api/emails',//地址
+						dataType:'json',//数据类型
+						type:'POST',//类型
+						timeout:2000,//超时
+						data:obj,
+						headers:{'X-Requested-with':'XMLHttpRequest'},
+						//请求成功
+						success:function(data,status){
+							console.log(data,status)
+							if(data.success==='success'){
+								alert('验证码发送中')
+							}
+						},
+						//失败/超时
+						error:function(XMLHttpRequest,textStatus,errorThrown){
+							console.log('err')
+							if(textStatus==='timeout'){
+								alert('請求超時');
+								// setTimeout(function(){
+								// 	alert('重新请求');
+								// },2000);
+							}
+							//alert(errorThrown);
+						}
+					})
+				}else{
+					alert("邮箱格式不正确");
+				}
+			})
+			$('button[name=testAPI]').click(function(){
+				var _form = $('form[name=form]').serializeObject();
+				console.log(_form)
+				$.ajax({
+					url:'http://192.168.1.252:3000/api/register',//地址
+					dataType:'json',//数据类型
+					type:'POST',//类型
+					timeout:2000,//超时
+					data:_form,
+					headers:{'X-Requested-with':'XMLHttpRequest'},
+					//请求成功
+					success:function(data,status){
+						console.log(data,status)
+					},
+					//失败/超时
+					error:function(XMLHttpRequest,textStatus,errorThrown){
+						console.log('err')
+						if(textStatus==='timeout'){
+							alert('請求超時');
+							// setTimeout(function(){
+							// 	alert('重新请求');
+							// },2000);
+						}
+						//alert(errorThrown);
+					}
+				})
+			})
+		})
+		// 自定义方法
+	    $.prototype.serializeObject=function(){
+	        var obj=new Object();
+	        $.each(this.serializeArray(),function(index,param){
+	            if(!(param.name in obj)){
+	                obj[param.name]=param.value;
+	            }
+	        });
+	        return obj;
+	    };
+	</script>
+</body>
+</html>

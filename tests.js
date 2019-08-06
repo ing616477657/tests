@@ -7,9 +7,23 @@ var dataDir = __dirname + '/upload';// 上传存放目录
 var photosDir = dataDir + '/photos';//图片存放目录or创建其他文件类型的目录
 fs.existsSync(dataDir) || fs.mkdirSync(dataDir);//创建目录
 fs.existsSync(photosDir) || fs.mkdirSync(photosDir);//创建目录
+var credentials = require('./credentials.js');//密码秘钥集合
+var nodemailer = require('nodemailer');//邮箱服务
+let mailTransport = nodemailer.createTransport({
+  // host: 'smtp.ethereal.email',
+  service: 'qq', // 使用了内置传输发送邮件 查看支持列表：https://nodemailer.com/smtp/well-known/
+  port: 465, // SMTP 端口
+  secureConnection: true, // 使用了 SSL
+  auth: {
+	 user: credentials.qq.user,
+	 pass: credentials.qq.password,
+  }
+});
+let codes;//邮箱验证码
 // 逻辑脚本
 var fortune = require('./lib/fortune.js');
 var tours = require('./lib/database.js');
+var emailcode = require('./lib/emailcode.js');//生产随机注册码
 // 设置端口号
 app.set('port', process.env.PORT || 3000);
 // 我是一个中间件创建一个服务器端数据对象
@@ -41,6 +55,29 @@ app.get('/api/gets', function(req, res){
 app.post('/api/process', function(req, res){
 	console.log(req.body);
 	res.json({success:'success'});
+});
+// 邮箱验证发送验证码
+app.post('/api/emails', function(req, res){
+	console.log(req.body.email);
+	codes = emailcode.getCode();//4位随机数
+	mailTransport.sendMail({
+		from: '"Meadowlark Travel" <'+credentials.qq.user+'>',
+		to: req.body.email,
+		subject: '注册验证码',
+		text: codes,
+	}, function(err){
+		if(err) console.error( 'Unable to send email: ' + err );
+	});
+	res.json({success:'success'});
+});
+// 邮箱验证发送验证码
+app.post('/api/register', function(req, res){
+	console.log(req.body.emailcode,codes);
+	if(req.body.emailcode===codes){
+		res.json({success:'success'});
+	}else{
+		res.json({error:'error',message:'邮箱验证码错误'});
+	}
 });
 // 上传图片
 // 客户端判断数据类型请求对应的图片上传还是其他文件上传接口
@@ -83,7 +120,7 @@ res.json({error:'404'});
 app.use(function(err, req, res, next){
 console.error(err.stack);
 res.status(500);
-res.json({error:'error'});
+res.json({error:err});
 });
 app.listen(app.get('port'), function(){
 console.log( 'Express started on http://localhost:' +
