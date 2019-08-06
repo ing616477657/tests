@@ -1,0 +1,11 @@
+<form action="/postinfo" method="GET">
+	{{#if username}}
+		<label style="color:red;">{{username}}</label>
+	{{/if}}
+	<input type="test" name="username" placeholder="username">
+	{{#if password}}
+		<label style="color:red;">{{password}}</label>
+	{{/if}}
+	<input type="test" name="password" placeholder="password">
+	<button type="submit">提交</button>
+</form>

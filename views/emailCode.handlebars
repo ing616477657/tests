@@ -1,0 +1,8 @@
+<h4>提交邮箱获得验证码</h4>
+<form action="/api/email" method="POST">
+	{{#if email}}
+		<label style="color:red;">{{email}}</label>
+	{{/if}}
+	<input type="text" name="email">
+	<button type="submit">提交邮箱</button>
+</form>
