@@ -1,3 +1,4 @@
+var dbase = require('./lib/db')
 var express = require('express');
 var app = express();
 var credentials = require('./credentials.js');//密码秘钥集合
