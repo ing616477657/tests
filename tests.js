@@ -1,4 +1,5 @@
-var dbase = require('./lib/db')
+var mongoose = require('./lib/db');
+var Models = require('./lib/getModels')
 var express = require('express');
 var app = express();
 var credentials = require('./credentials.js');//密码秘钥集合
@@ -46,6 +47,7 @@ app.all('*',function (req, res, next) {
        next();
    }
 });
+
 app.use(function(req, res, next){
 // 如果有即显消息，把它传到上下文中，然后清除它
 res.locals.username = req.session.username;
@@ -56,6 +58,11 @@ delete req.session.password;
 delete req.session.email;
 next();
 });
+// 多个集合组成了对象Models
+// 接下来可以对单个集合进行增删改查操作
+Models.first.find(function(err,v){
+	console.log(v)
+})
 // 路由
 app.get('/emailCode', function(req, res){
 	res.render('emailCode');
