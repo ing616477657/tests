@@ -4,15 +4,36 @@
 	<meta charset="utf-8">
 	<title>mongodb数据库操作</title>
 	<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+	<form name='add'>
+		<input type="text" name="username" placeholder="username">
+		<input type="text" name="password" placeholder="password">
+		<input type="text" name="email" placeholder="email">
+	</form>
+	<button name="add">增加一条数据</button>
+	<form name='delete'>
+		<input type="text" name="username" placeholder="username">
+	</form>
+	<button name="delete">删除一条数据</button>
+	<form name='change'>
+		<input type="text" name="username" placeholder="username">
+		<input type="text" name="password" placeholder="password">
+		<input type="text" name="email" placeholder="email">
+	</form>
+	<button name="change">修改一条数据</button>
+	<form name='find'>
+		<input type="text" name="username" placeholder="username">
+	</form>
+	<button name="find">查询</button>
+	<div><ul name="find"></ul></div>
 </head>
 <body>
 	<script type="text/javascript">
 		$(function(){
-			$('button[name=testAPI]').click(function(){
-				var _form = $('form[name=form]').serializeObject();
-				console.log(_form)
+			$('button[name=add]').click(function(){
+				var _form = $('form[name=add]').serializeObject();
+				// console.log(_form)
 				$.ajax({
-					url:'http://192.168.1.3:3000/api/register',//地址
+					url:'http://192.168.1.3:3000/api/add',//地址
 					dataType:'json',//数据类型
 					type:'POST',//类型
 					timeout:2000,//超时
@@ -21,6 +42,99 @@
 					//请求成功
 					success:function(data,status){
 						console.log(data,status)
+					},
+					//失败/超时
+					error:function(XMLHttpRequest,textStatus,errorThrown){
+						console.log('err')
+						if(textStatus==='timeout'){
+							alert('請求超時');
+							// setTimeout(function(){
+							// 	alert('重新请求');
+							// },2000);
+						}
+						//alert(errorThrown);
+					}
+				})
+			})
+			$('button[name=delete]').click(function(){
+				var _form = $('form[name=delete]').serializeObject();
+				// console.log(_form)
+				$.ajax({
+					url:'http://192.168.1.3:3000/api/delete',//地址
+					dataType:'json',//数据类型
+					type:'POST',//类型
+					timeout:2000,//超时
+					data:_form,
+					headers:{'X-Requested-with':'XMLHttpRequest'},
+					//请求成功
+					success:function(data,status){
+						console.log(data,status)
+					},
+					//失败/超时
+					error:function(XMLHttpRequest,textStatus,errorThrown){
+						console.log('err')
+						if(textStatus==='timeout'){
+							alert('請求超時');
+							// setTimeout(function(){
+							// 	alert('重新请求');
+							// },2000);
+						}
+						//alert(errorThrown);
+					}
+				})
+			})
+			$('button[name=change]').click(function(){
+				var _form = $('form[name=change]').serializeObject();
+				// console.log(_form)
+				$.ajax({
+					url:'http://192.168.1.3:3000/api/change',//地址
+					dataType:'json',//数据类型
+					type:'POST',//类型
+					timeout:2000,//超时
+					data:_form,
+					headers:{'X-Requested-with':'XMLHttpRequest'},
+					//请求成功
+					success:function(data,status){
+						console.log(data,status)
+					},
+					//失败/超时
+					error:function(XMLHttpRequest,textStatus,errorThrown){
+						console.log('err')
+						if(textStatus==='timeout'){
+							alert('請求超時');
+							// setTimeout(function(){
+							// 	alert('重新请求');
+							// },2000);
+						}
+						//alert(errorThrown);
+					}
+				})
+			})
+			$('button[name=find]').click(function(){
+				var _form = $('form[name=find]').serializeObject();
+				// console.log(_form)
+				$.ajax({
+					url:'http://192.168.1.3:3000/api/find',//地址
+					dataType:'json',//数据类型
+					type:'POST',//类型
+					timeout:2000,//超时
+					data:_form,
+					headers:{'X-Requested-with':'XMLHttpRequest'},
+					//请求成功
+					success:function(data,status){
+						console.log(data,status)
+						var str = '';
+						for(i in data.data){
+							console.log(data.data[i])
+							str +='<li>用户名：'+data.data[i].username+' 邮箱：'+ data.data[i].email +'</li>'
+						}
+						if(data.success==='success'){
+							$('ul[name=find]').html(str)
+						}
+						if(data.success==='error'){
+							$('ul[name=find]').html(data.message)
+						}
+						
 					},
 					//失败/超时
 					error:function(XMLHttpRequest,textStatus,errorThrown){

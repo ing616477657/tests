@@ -1,12 +1,12 @@
 var express = require('express');
 var app = express();
 app.use(require('body-parser')());//解析post参数
-app.use(require('cookie-parser')(require('./lib/credentials').cookieSecret));//引入cookie
 // 设置端口号
 app.set('port', process.env.PORT || 3000);
 // 处理跨域请求
 app.all('*',function (req, res, next) {
    res.header('Access-Control-Allow-Origin', '*');
+   res.header("Access-Control-Allow-Credentials", "true");
    res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept, X-Requested-With , yourHeaderFeild');
    res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE,OPTIONS');
    if (req.method == 'OPTIONS') {
