@@ -4,6 +4,8 @@
 	<meta charset="utf-8">
 	<title>通过邮箱发送验证码注册账号</title>
 	<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+	<script type="text/javascript" src="https://cdn.bootcss.com/blueimp-md5/2.11.0/js/md5.min.js"></script>
+	<script type="text/javascript" src="https://cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 </head>
 <body>
 	<form name='form'>
@@ -37,6 +39,7 @@
 							if(data.success==='success'){
 								alert('验证码发送中')
 							}
+							$.cookie('emailcode', data.data.emailcode, { expires: 7 });
 						},
 						//失败/超时
 						error:function(XMLHttpRequest,textStatus,errorThrown){
@@ -56,7 +59,10 @@
 			})
 			$('button[name=testAPI]').click(function(){
 				var _form = $('form[name=form]').serializeObject();
-				console.log(_form)
+				if(!(md5(_form.emailcode)==$.cookie('emailcode'))){
+					alert('邮箱验证码错误')
+					return;
+				}
 				$.ajax({
 					url:'http://192.168.1.3:3000/api/register',//地址
 					dataType:'json',//数据类型
