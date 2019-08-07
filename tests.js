@@ -60,8 +60,24 @@ next();
 });
 // 多个集合组成了对象Models
 // 接下来可以对单个集合进行增删改查操作
-Models.first.find(function(err,v){
-	console.log(v)
+Models.first.find({name:'Hood River Day Trip'},function(err,v){
+	if(err) return;
+	if(v.length>0) return;
+	new Models.first({
+		name: 'Hood River Day Trip',
+		date:Date.now()
+	}).save(function(err,v){
+		console.log('增：' + v)
+	})
+})
+Models.first.remove({_id:'5d4a41056eb2986fdc6d6af1'},function(err,v){
+		console.log('删：' + v.ok)
+})
+Models.first.update({name:'jojo'}, { $set: { name: 'jason bourne' }},{multi:true}, function(err, res){
+	console.log('改：' + res.ok)
+});
+Models.first.find({name:'jojo'},function(err,v){
+	console.log('查: '+ v)
 })
 // 路由
 app.get('/emailCode', function(req, res){
@@ -117,7 +133,5 @@ res.render('500');
 });
 app.listen(app.get('port'), function(){
 console.log( 'Express started on http://localhost:' +
-app.get('port') + '; press Ctrl-C to terminate.' );
+app.get('port') +' '+app.get('env')+ '; press Ctrl-C to terminate.' );
 });
-console.log('test commit1')
-console.log(app.get('env'))
