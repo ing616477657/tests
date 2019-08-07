@@ -1,6 +1,7 @@
 var express = require('express');
 var app = express();
 app.use(require('body-parser')());//解析post参数
+app.use(require('cookie-parser')(require('./lib/credentials').cookieSecret));//引入cookie
 // 设置端口号
 app.set('port', process.env.PORT || 3000);
 // 处理跨域请求

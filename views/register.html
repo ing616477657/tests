@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<meta charset="utf-8">
 	<title>通过邮箱发送验证码注册账号</title>
 	<script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
 </head>
@@ -27,6 +28,9 @@
 						timeout:2000,//超时
 						data:obj,
 						headers:{'X-Requested-with':'XMLHttpRequest'},
+						beforeSend: function(xhr) {
+			                xhr.withCredentials = true;
+			            },
 						//请求成功
 						success:function(data,status){
 							console.log(data,status)
